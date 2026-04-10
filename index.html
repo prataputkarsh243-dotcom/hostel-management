@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hostel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; background: #f4f7f6; margin: 0; overflow-x: hidden; }
+        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-100px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 80% { transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes slideDownFade { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes ultraEntry { from { opacity: 0; transform: translateY(30px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes rowSlideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+
+        #loginPage .card { animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important; }
+        #loginForm input, #loginForm select, #btnLogin, .form-control { transition: all 0.3s ease; border-radius: 8px; }
+        #loginForm input:focus, #loginForm select:focus, .form-control:focus { transform: scale(1.02); box-shadow: 0 5px 15px rgba(13, 110, 253, 0.15); border-color: #0d6efd; }
+        #btnLogin:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(13, 110, 253, 0.4); }
+
+        .sidebar { min-width: 260px; min-height: 100vh; color: #fff; box-shadow: 4px 0 20px rgba(0,0,0,0.08); animation: slideInLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; z-index: 100;}
+        .sidebar-admin { background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); }
+        .sidebar-student { background: linear-gradient(180deg, #4f46e5 0%, #312e81 100%); }
+        .sidebar .logo-area { padding: 25px 20px; text-align: center; font-weight: bold; font-size: 1.4rem; background: rgba(0,0,0,0.2); letter-spacing: 1px;}
+        .sidebar ul li a { padding: 16px 20px; display: block; color: #e2e8f0; text-decoration: none; cursor: pointer; transition: all 0.3s ease; border-radius: 0 30px 30px 0; margin-right: 15px;}
+        .sidebar ul li a:hover { transform: translateX(10px); }
+        .sidebar-admin ul li.active > a, .sidebar-admin ul li a:hover { background: rgba(59, 130, 246, 0.9); color: #fff; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);}
+        .sidebar-student ul li.active > a, .sidebar-student ul li a:hover { background: rgba(67, 56, 202, 0.9); color: #fff; box-shadow: 0 4px 15px rgba(67, 56, 202, 0.4);}
+
+        .main-content { width: 100%; padding: 25px; overflow-y: auto;}
+        .navbar { animation: slideDownFade 0.6s ease both; border: none !important; }
+        .dashboard-card { border-radius: 16px; border: none; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .dashboard-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 30px rgba(0,0,0,0.12); z-index: 10; }
+
+        .portal-view, .content-section { display: none; opacity: 0; }
+        .active-view { display: block; animation: ultraEntry 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
+        
+        .active-view .card { animation: fadeInUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) both; }
+        .active-view .row > div:nth-child(1) .card { animation-delay: 0.1s; } .active-view .row > div:nth-child(2) .card { animation-delay: 0.2s; }
+        .active-view .row > div:nth-child(3) .card { animation-delay: 0.3s; } .active-view .row > div:nth-child(4) .card { animation-delay: 0.4s; }
+        .active-view .mt-4 > div:nth-child(1) .card { animation-delay: 0.3s; } .active-view .mt-4 > div:nth-child(2) .card { animation-delay: 0.4s; }
+
+        tbody tr { animation: rowSlideIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) both; transition: all 0.3s ease; }
+        .active-view tbody tr:nth-child(1) { animation-delay: 0.10s; } .active-view tbody tr:nth-child(2) { animation-delay: 0.15s; }
+        .active-view tbody tr:nth-child(3) { animation-delay: 0.20s; } .active-view tbody tr:nth-child(4) { animation-delay: 0.25s; }
+        .active-view tbody tr:nth-child(5) { animation-delay: 0.30s; } .active-view tbody tr:nth-child(n+6) { animation-delay: 0.35s; } 
+        tbody tr:hover { background-color: #f8fafc !important; transform: scale(1.01) translateX(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; z-index: 2; }
+
+        .list-group-item { animation: rowSlideIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) both; transition: all 0.3s; border-left: 4px solid transparent;}
+        .list-group-item:hover { transform: translateX(5px); border-left-color: #0d6efd; background-color: #f8fafc;}
+        .active-view .list-group-item:nth-child(1) { animation-delay: 0.1s; } .active-view .list-group-item:nth-child(2) { animation-delay: 0.2s; }
+
+        .btn { transition: all 0.3s ease; }
+        .btn-success:hover { box-shadow: 0 5px 15px rgba(25, 135, 84, 0.4); transform: translateY(-2px);}
+        .btn-danger:hover { box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4); transform: translateY(-2px);}
+        .btn-primary:hover { box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4); transform: translateY(-2px);}
+        #st-avatar { transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #st-avatar:hover { transform: rotate(360deg) scale(1.1); box-shadow: 0 0 15px rgba(255,255,255,0.5);}
+    </style>
+</head>
+<body>
+
+    <div id="loginPage" class="d-flex align-items-center justify-content-center vh-100 w-100">
+        <div class="card p-5 shadow-lg" style="width: 420px; border-radius: 20px;">
+            <div class="text-center mb-4">
+                <div style="font-size: 3rem; color: #0d6efd; animation: fadeInUp 0.5s 0.2s both;"><i class="fas fa-building"></i></div>
+                <h2 class="fw-bold mt-2" style="animation: fadeInUp 0.5s 0.3s both;">Hostel</h2>
+                <p class="text-muted small" style="animation: fadeInUp 0.5s 0.4s both;">Select your role to login</p>
+            </div>
+            <form id="loginForm" style="animation: fadeInUp 0.5s 0.5s both;">
+                <label class="form-label small fw-bold text-muted">I am a...</label>
+                <select id="loginRole" class="form-select mb-4 py-2" onchange="toggleLoginUI()">
+                    <option value="admin">Admin / Management</option>
+                    <option value="student">Student / Resident</option>
+                </select>
+                <label id="lblId" class="form-label small fw-bold text-muted">Email Address</label>
+                <input type="text" id="loginId" class="form-control mb-4 py-2" value="admin@hostel.com" required>
+                <label class="form-label small fw-bold text-muted">Password</label>
+                <input type="password" id="loginPwd" class="form-control mb-4 py-2" value="admin123" required>
+                <button class="btn btn-primary w-100 py-3 fw-bold mt-2" id="btnLogin" style="font-size: 1.1rem;"><i class="fas fa-sign-in-alt me-2"></i> Secure Login</button>
+            </form>
+            
+            <div id="signupLinkDiv" class="text-center mt-4" style="display: none; animation: fadeInUp 0.5s 0.6s both;">
+                <p class="small text-muted mb-0">Don't have an account?</p>
+                <button class="btn btn-link text-decoration-none fw-bold" data-bs-toggle="modal" data-bs-target="#studentSignupModal">Create Student Account</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="adminPortal" class="portal-view">
+        <div class="d-flex">
+            <nav class="sidebar sidebar-admin">
+                <div class="logo-area"><i class="fas fa-shield-alt me-2 text-primary"></i>Admin Portal</div>
+                <ul class="list-unstyled mt-4" id="adminNav">
+                    <li class="active"><a data-target="v-admin-dash"><i class="fas fa-home me-3"></i> Overview</a></li>
+                    <li><a data-target="v-admin-stud"><i class="fas fa-user-graduate me-3"></i> Students</a></li>
+                    <li><a data-target="v-admin-room"><i class="fas fa-bed me-3"></i> Room Status</a></li>
+                    <li><a data-target="v-admin-fee"><i class="fas fa-rupee-sign me-3"></i> Fee Tracking</a></li>
+                    <li><a data-target="v-admin-comp"><i class="fas fa-exclamation-triangle me-3"></i> Complaints</a></li>
+                </ul>
+            </nav>
+            <div class="main-content">
+                <nav class="navbar navbar-light bg-white p-3 mb-4 shadow-sm rounded-4 d-flex justify-content-between align-items-center">
+                    <span class="fw-bold fs-4 text-dark ms-2">Management Dashboard</span>
+                    <button class="btn btn-outline-danger px-4 rounded-pill fw-bold" onclick="logout()"><i class="fas fa-power-off me-2"></i> Logout</button>
+                </nav>
+
+                <div id="v-admin-dash" class="content-section active-view">
+                    <div class="row">
+                        <div class="col-md-3 mb-3"><div class="card dashboard-card bg-primary text-white p-4" style="background: linear-gradient(45deg, #0d6efd, #0dcaf0);"><p class="mb-1 opacity-75 fw-bold"><i class="fas fa-users me-2"></i>Total Students</p><h2 class="fw-bold display-5 mb-0" id="stat-students">-</h2></div></div>
+                        <div class="col-md-3 mb-3"><div class="card dashboard-card bg-success text-white p-4" style="background: linear-gradient(45deg, #198754, #20c997);"><p class="mb-1 opacity-75 fw-bold"><i class="fas fa-door-open me-2"></i>Rooms Available</p><h2 class="fw-bold display-5 mb-0" id="stat-rooms">-</h2></div></div>
+                        <div class="col-md-3 mb-3"><div class="card dashboard-card text-dark p-4" style="background: linear-gradient(45deg, #ffc107, #ffeb3b);"><p class="mb-1 opacity-75 fw-bold"><i class="fas fa-tools me-2"></i>Pending Issues</p><h2 class="fw-bold display-5 mb-0" id="stat-complaints">-</h2></div></div>
+                        <div class="col-md-3 mb-3"><div class="card dashboard-card bg-dark text-white p-4" style="background: linear-gradient(45deg, #212529, #495057);"><p class="mb-1 opacity-75 fw-bold text-success"><i class="fas fa-wallet me-2"></i>Total Revenue</p><h2 class="fw-bold text-success display-5 mb-0" id="stat-revenue">-</h2></div></div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-6"><div class="card p-4 shadow-sm dashboard-card h-100"><h5 class="fw-bold text-success mb-4">💰 Revenue Analytics</h5><canvas id="revenueChart"></canvas></div></div>
+                        <div class="col-md-6"><div class="card p-4 shadow-sm dashboard-card h-100"><h5 class="fw-bold text-danger mb-4">⚠️ Complaints Overview</h5><div style="max-height:280px; display:flex; justify-content:center"><canvas id="complaintChart"></canvas></div></div></div>
+                    </div>
+                </div>
+
+                <div id="v-admin-stud" class="content-section"><div class="card dashboard-card p-4 bg-white"><div class="d-flex justify-content-between align-items-center mb-4"><h4 class="fw-bold text-primary mb-0"><i class="fas fa-user-graduate me-2"></i>Students Directory</h4><button class="btn btn-primary fw-bold rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#addSModal"><i class="fas fa-plus me-2"></i>Add Student</button></div><div class="table-responsive"><table class="table align-middle"><thead class="table-light"><tr><th>ID</th><th>Name</th><th>Email</th><th>Room</th><th>Action</th></tr></thead><tbody id="sTable"></tbody></table></div></div></div>
+                <div id="v-admin-room" class="content-section"><div class="card dashboard-card p-4 bg-white"><h4 class="fw-bold mb-4 text-primary"><i class="fas fa-bed me-2"></i>Live Room Status</h4><div class="row" id="rContainer"></div></div></div>
+                <div id="v-admin-fee" class="content-section"><div class="card dashboard-card p-4 bg-white"><h4 class="fw-bold mb-4 text-success"><i class="fas fa-rupee-sign me-2"></i>Fee Tracking System</h4><div class="table-responsive"><table class="table align-middle"><thead class="table-light"><tr><th>ID</th><th>Name</th><th>Total Fee</th><th>Paid</th><th>Balance</th><th>Action</th></tr></thead><tbody id="fTable"></tbody></table></div></div></div>
+                <div id="v-admin-comp" class="content-section"><div class="card dashboard-card p-4 bg-white shadow-sm"><h4 class="fw-bold mb-4 text-danger"><i class="fas fa-clipboard-list me-2"></i>Complaints Helpdesk</h4><div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>Date</th><th>Student Info</th><th>Category</th><th>Issue Description</th><th>Status</th><th>Action</th></tr></thead><tbody id="cTable"></tbody></table></div></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="studentPortal" class="portal-view">
+        <div class="d-flex">
+            <nav class="sidebar sidebar-student">
+                <div class="logo-area"><i class="fas fa-user-circle me-2 text-warning"></i>Student Portal</div>
+                <div class="text-center p-4 border-bottom border-light border-opacity-25" style="animation: fadeInUp 1s ease;">
+                    <div class="bg-white text-primary rounded-circle d-inline-flex justify-content-center align-items-center mb-3 shadow" style="width:70px;height:70px;font-size:28px;font-weight:bold" id="st-avatar">S</div>
+                    <h5 class="mb-1 fw-bold" id="st-nav-name">Name</h5>
+                    <span class="badge bg-light text-primary rounded-pill px-3 py-1" id="st-nav-id">#ID</span>
+                </div>
+                <ul class="list-unstyled mt-4" id="studentNav">
+                    <li class="active"><a data-target="v-stud-dash"><i class="fas fa-tachometer-alt me-3"></i> My Dashboard</a></li>
+                    <li><a data-target="v-stud-fee"><i class="fas fa-wallet me-3"></i> Fee & Payments</a></li>
+                    <li><a data-target="v-stud-comp"><i class="fas fa-headset me-3"></i> Help & Support</a></li>
+                </ul>
+            </nav>
+            <div class="main-content">
+                <nav class="navbar navbar-light bg-white p-3 mb-4 shadow-sm rounded-4 d-flex justify-content-between align-items-center">
+                    <span class="fw-bold fs-4 text-dark ms-2">Welcome to your Space</span>
+                    <button class="btn btn-outline-danger px-4 rounded-pill fw-bold" onclick="logout()"><i class="fas fa-power-off me-2"></i> Logout</button>
+                </nav>
+
+                <div id="v-stud-dash" class="content-section active-view">
+                    <div class="row">
+                        <div class="col-md-6 mb-4"><div class="card dashboard-card p-5 bg-primary text-white h-100" style="background: linear-gradient(135deg, #4f46e5, #0ea5e9); position: relative; overflow: hidden;"><i class="fas fa-door-closed position-absolute" style="font-size: 8rem; opacity: 0.1; right: -20px; bottom: -20px;"></i><h5 class="fw-light">Assigned Room</h5><h1 class="display-2 fw-bold mt-2" id="st-room-display" style="text-shadow: 2px 2px 10px rgba(0,0,0,0.2);">-</h1></div></div>
+                        <div class="col-md-6 mb-4"><div class="card dashboard-card p-5 bg-white border-start border-5 border-warning h-100 position-relative overflow-hidden"><i class="fas fa-rupee-sign position-absolute text-warning" style="font-size: 8rem; opacity: 0.1; right: 10px; bottom: -10px;"></i><h5 class="text-muted fw-bold">Pending Dues</h5><h1 class="display-3 fw-bold text-danger mt-2" id="st-balance-display">₹0</h1><button class="btn btn-warning fw-bold mt-3 w-50 rounded-pill shadow-sm" onclick="document.querySelector('#studentNav a[data-target=\'v-stud-fee\']').click()">Pay Now <i class="fas fa-arrow-right ms-2"></i></button></div></div>
+                    </div>
+                </div>
+
+                <div id="v-stud-fee" class="content-section"><div class="card dashboard-card p-5 bg-white border-top border-5 border-success"><h3 class="fw-bold text-success mb-4"><i class="fas fa-file-invoice-dollar me-2"></i> Fee Details</h3><div class="row mb-4"><div class="col-md-6"><div class="p-4 bg-light rounded-4 border"><p class="text-muted mb-1 fw-bold">Total Hostel Fee</p><h3 class="fw-bold" id="st-total-fee">₹0</h3></div></div><div class="col-md-6"><div class="p-4 bg-success bg-opacity-10 rounded-4 border border-success"><p class="text-success mb-1 fw-bold">Total Amount Paid</p><h3 class="fw-bold text-success" id="st-paid-fee">₹0</h3></div></div></div><div class="bg-dark text-white p-4 rounded-4 shadow-sm mt-2"><h5 class="mb-3"><i class="fab fa-cc-stripe me-2"></i> Make Quick Payment</h5><div class="input-group input-group-lg"><span class="input-group-text bg-white border-0 fw-bold">₹</span><input type="number" id="st-pay-amount" class="form-control border-0" placeholder="Enter amount to pay"><button class="btn btn-success fw-bold px-5" onclick="studentPayFee()">Proceed to Pay</button></div></div></div></div>
+                <div id="v-stud-comp" class="content-section"><div class="row"><div class="col-md-5 mb-4"><div class="card dashboard-card p-4 bg-white border-top border-5 border-danger shadow-sm h-100"><h4 class="fw-bold text-danger mb-4"><i class="fas fa-exclamation-circle me-2"></i> Raise a Ticket</h4><label class="fw-bold text-muted small mb-2">Category</label><select id="st-issue-cat" class="form-select form-select-lg mb-4 bg-light"><option value="Electrical">⚡ Electrical Issue</option><option value="Plumbing">🚰 Plumbing / Water</option><option value="Cleaning">🧹 Room Cleaning</option><option value="Internet">🌐 Wi-Fi / Internet</option><option value="Other">📌 Other Issue</option></select><label class="fw-bold text-muted small mb-2">Description</label><textarea id="st-issue-desc" class="form-control bg-light mb-4" rows="5" placeholder="Please describe your problem clearly..."></textarea><button class="btn btn-danger btn-lg w-100 fw-bold rounded-pill shadow-sm" onclick="studentSubmitComplaint()"><i class="fas fa-paper-plane me-2"></i> Submit Ticket</button></div></div><div class="col-md-7 mb-4"><div class="card dashboard-card p-4 bg-white shadow-sm h-100"><h4 class="fw-bold mb-4 text-primary"><i class="fas fa-history me-2"></i> Ticket History</h4><div class="overflow-auto pe-2" style="max-height: 450px;"><ul class="list-group list-group-flush" id="st-complaint-list"></ul></div></div></div></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addSModal"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow-lg rounded-4"><div class="modal-body p-5"><h4 class="fw-bold mb-4 text-primary"><i class="fas fa-user-plus me-2"></i> Register Student</h4><form id="addSForm"><div class="form-floating mb-3"><input type="text" id="sid" class="form-control rounded-3" placeholder="ID" required><label>Student ID (e.g. #S105)</label></div><div class="form-floating mb-3"><input type="text" id="sname" class="form-control rounded-3" placeholder="Name" required><label>Full Name</label></div><div class="form-floating mb-3"><input type="email" id="semail" class="form-control rounded-3" placeholder="Email" required><label>Email Address</label></div><div class="form-floating mb-4"><input type="text" id="sroom" class="form-control rounded-3" placeholder="Room" required><label>Assign Room Number</label></div><div class="alert alert-info border-0 rounded-3 small"><i class="fas fa-info-circle me-2"></i>Default password will be <b>pass123</b></div><button class="btn btn-primary btn-lg w-100 fw-bold rounded-pill shadow-sm mt-2">Save Student Record</button></form></div></div></div></div>
+    
+    <div class="modal fade" id="payFeeModal"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content border-0 shadow-lg rounded-4"><div class="modal-body p-4 text-center"><div class="bg-success text-white rounded-circle d-inline-flex justify-content-center align-items-center mb-3 shadow" style="width:60px;height:60px;font-size:24px;"><i class="fas fa-rupee-sign"></i></div><h4 class="fw-bold mb-4 text-dark">Process Cash Payment</h4><input type="hidden" id="paySId"><div class="input-group mb-4 shadow-sm rounded-3 overflow-hidden"><span class="input-group-text bg-light border-0 fw-bold text-success">₹</span><input type="number" id="payAmount" class="form-control border-0 bg-light form-control-lg" placeholder="Amount" required></div><button class="btn btn-success btn-lg w-100 fw-bold rounded-pill shadow-sm" onclick="adminSubmitPayment()">Confirm Deposit</button></div></div></div></div>
+
+    <div class="modal fade" id="studentSignupModal" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-body p-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold text-primary mb-0"><i class="fas fa-user-plus me-2"></i> Create Account</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form id="studentSignupForm">
+                        <div class="form-floating mb-3"><input type="text" id="regName" class="form-control rounded-3" placeholder="Name" required><label>Full Name</label></div>
+                        <div class="form-floating mb-3"><input type="email" id="regEmail" class="form-control rounded-3" placeholder="Email" required><label>Email Address</label></div>
+                        <div class="form-floating mb-3"><input type="password" id="regPwd" class="form-control rounded-3" placeholder="Password" required><label>Create Password</label></div>
+                        <div class="form-floating mb-4">
+                            <select id="regRoom" class="form-select rounded-3">
+                                <option value="101">Room 101 (2 Beds)</option>
+                                <option value="102">Room 102 (2 Beds)</option>
+                                <option value="103">Room 103 (2 Beds)</option>
+                            </select>
+                            <label>Select Room Preference</label>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold rounded-pill shadow-sm mt-2"><i class="fas fa-check-circle me-2"></i> Register & Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const API = "http://localhost:3001/api";
+        let revenueChart, complaintChart, currentUser = null;
+
+        function toggleLoginUI() {
+            const role = document.getElementById("loginRole").value;
+            if(role === 'admin') {
+                document.getElementById("lblId").innerText = "Admin Email Address";
+                document.getElementById("loginId").value = "admin@hostel.com";
+                document.getElementById("loginPwd").value = "admin123";
+                document.getElementById("btnLogin").className = "btn btn-primary w-100 py-3 fw-bold mt-2";
+                document.getElementById("btnLogin").innerHTML = '<i class="fas fa-user-shield me-2"></i> Admin Login';
+                document.getElementById("signupLinkDiv").style.display = "none"; // Hide signup for admin
+            } else {
+                document.getElementById("lblId").innerText = "Student Email Address";
+                document.getElementById("loginId").value = "rahul@test.com"; 
+                document.getElementById("loginPwd").value = "pass123";
+                document.getElementById("btnLogin").className = "btn btn-success w-100 py-3 fw-bold mt-2";
+                document.getElementById("btnLogin").innerHTML = '<i class="fas fa-user-graduate me-2"></i> Student Login';
+                document.getElementById("signupLinkDiv").style.display = "block"; // Show signup for student
+            }
+        }
+        
+        // Initialize UI on load
+        toggleLoginUI();
+
+        document.getElementById("loginForm").onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById("btnLogin");
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Connecting...';
+            
+            const role = document.getElementById("loginRole").value;
+            const identifier = document.getElementById("loginId").value.trim();
+            const password = document.getElementById("loginPwd").value.trim();
+
+            try {
+                const res = await fetch(`${API}/login`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ role, identifier, password }) });
+                const data = await res.json();
+                
+                setTimeout(() => { 
+                    if(data.success) {
+                        document.getElementById("loginPage").style.display = "none"; document.getElementById("loginPage").classList.remove("d-flex");
+                        if(data.role === 'admin') { document.getElementById("adminPortal").classList.add("active-view"); fetchAdminStats(); fetchAnalytics(); } 
+                        else { document.getElementById("studentPortal").classList.add("active-view"); currentUser = data.studentData; loadStudentDashboard(); }
+                    } else { btn.innerHTML = originalText; alert("❌ Invalid Credentials! Please check again."); }
+                }, 600);
+            } catch(err) { btn.innerHTML = originalText; alert("Server is offline! Run 'node server.js' first."); }
+        };
+
+        // ✨ NEW: Student Self Sign Up Logic ✨
+        document.getElementById("studentSignupForm").onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector("button");
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Creating Account...';
+
+            const name = document.getElementById("regName").value.trim();
+            const email = document.getElementById("regEmail").value.trim();
+            const password = document.getElementById("regPwd").value.trim();
+            const room = document.getElementById("regRoom").value;
+
+            try {
+                const res = await fetch(`${API}/students`, { 
+                    method: 'POST', headers: {'Content-Type':'application/json'}, 
+                    body: JSON.stringify({ name, email, password, room }) 
+                });
+                const data = await res.json();
+
+                if(data.success) {
+                    // Hide modal
+                    bootstrap.Modal.getInstance(document.getElementById('studentSignupModal')).hide();
+                    
+                    // Auto-fill login form with new details
+                    document.getElementById("loginRole").value = "student";
+                    toggleLoginUI(); // Update UI colors
+                    document.getElementById("loginId").value = email;
+                    document.getElementById("loginPwd").value = password;
+                    
+                    alert(`🎉 Account Created Successfully!\nYour Student ID is: ${data.studentId}\n\nClick OK to login.`);
+                    
+                    // Auto-click login button
+                    document.getElementById("btnLogin").click();
+                } else {
+                    alert("Error creating account. Please try again.");
+                    btn.innerHTML = originalText;
+                }
+            } catch(err) {
+                alert("Server connection failed.");
+                btn.innerHTML = originalText;
+            }
+        };
+
+        function setupNav(navId) {
+            document.querySelectorAll(`#${navId} a`).forEach(link => {
+                link.onclick = (e) => {
+                    document.querySelectorAll(`#${navId} li`).forEach(li => li.classList.remove("active"));
+                    link.parentElement.classList.add("active");
+                    const target = link.getAttribute("data-target");
+                    link.closest('.portal-view').querySelectorAll('.content-section').forEach(s => s.classList.remove("active-view"));
+                    const targetView = document.getElementById(target);
+                    void targetView.offsetWidth; targetView.classList.add("active-view");
+                    if(target === "v-admin-dash") { fetchAdminStats(); fetchAnalytics(); }
+                    if(target === "v-admin-stud") fetchS(); if(target === "v-admin-room") fetchR(); if(target === "v-admin-fee") fetchFees(); if(target === "v-admin-comp") fetchC();
+                    if(target === "v-stud-dash" || target === "v-stud-fee") loadStudentDashboard(); if(target === "v-stud-comp") fetchStudentComplaints();
+                };
+            });
+        }
+        setupNav("adminNav"); setupNav("studentNav");
+
+        async function reloadStudentData() { const res = await fetch(`${API}/students/${encodeURIComponent(currentUser.studentId)}`); currentUser = await res.json(); loadStudentDashboard(); }
+        function loadStudentDashboard() {
+            if(!currentUser) return;
+            document.getElementById("st-avatar").innerText = currentUser.name.charAt(0).toUpperCase(); document.getElementById("st-nav-name").innerText = currentUser.name; document.getElementById("st-nav-id").innerText = currentUser.email || currentUser.studentId;
+            document.getElementById("st-room-display").innerText = currentUser.room; document.getElementById("st-balance-display").innerText = "₹" + (currentUser.totalFee - currentUser.paidFee).toLocaleString();
+            document.getElementById("st-total-fee").innerText = "₹" + currentUser.totalFee.toLocaleString(); document.getElementById("st-paid-fee").innerText = "₹" + currentUser.paidFee.toLocaleString();
+        }
+        async function studentPayFee() { const amount = document.getElementById("st-pay-amount").value; if(!amount || amount <= 0) return alert("Enter valid amount"); await fetch(`${API}/pay-fee`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ studentId: currentUser.studentId, amount: amount }) }); alert("Payment Successful! 🎉"); document.getElementById("st-pay-amount").value = ""; reloadStudentData(); }
+        async function studentSubmitComplaint() {
+            const category = document.getElementById("st-issue-cat").value; const issue = document.getElementById("st-issue-desc").value; if(!issue.trim()) return alert("Please describe the issue!");
+            await fetch(`${API}/complaints`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ studentId: currentUser.studentId, studentName: currentUser.name, roomNumber: currentUser.room, category: category, issue: issue }) });
+            alert("✅ Complaint Sent Successfully!"); document.getElementById("st-issue-desc").value = ""; fetchStudentComplaints();
+        }
+        async function fetchStudentComplaints() {
+            const res = await fetch(`${API}/complaints/room/${currentUser.room}`); const data = await res.json(); const list = document.getElementById("st-complaint-list"); list.innerHTML = "";
+            if(data.length === 0) return list.innerHTML = "<li class='list-group-item text-muted text-center py-5 bg-light rounded-4 border-0 mt-2'><i class='fas fa-check-circle display-4 text-success mb-3 opacity-50'></i><br>No past complaints!<br>You are all good.</li>";
+            data.forEach(c => {
+                const dateStr = new Date(c.date).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric'}); const isPending = c.status === 'Pending';
+                list.innerHTML += `<li class="list-group-item py-3 mb-2 rounded-3 border ${isPending ? 'border-warning' : 'border-success'}"><div class="d-flex justify-content-between align-items-center mb-2"><strong class="text-dark"><i class="fas fa-tag me-2 opacity-50"></i>${c.category}</strong><span class="badge rounded-pill ${isPending ? 'bg-warning text-dark' : 'bg-success'}"><i class="fas ${isPending ? 'fa-clock' : 'fa-check'} me-1"></i>${c.status}</span></div><p class="mb-2 text-muted" style="font-size:0.95rem;">${c.issue}</p><small class="text-secondary fw-bold" style="font-size: 0.75rem;"><i class="far fa-calendar-alt me-1"></i> ${dateStr}</small></li>`;
+            });
+        }
+
+        async function fetchAdminStats() {
+            const res = await fetch(`${API}/dashboard-stats`); const d = await res.json();
+            animateValue("stat-students", 0, d.totalStudents, 1000); animateValue("stat-rooms", 0, d.roomsAvailable, 1000); animateValue("stat-complaints", 0, d.pendingComplaints, 1000); document.getElementById("stat-revenue").innerText = d.monthlyRevenue;
+        }
+        function animateValue(id, start, end, duration) {
+            if (start === end) { document.getElementById(id).innerHTML = end; return; } let obj = document.getElementById(id); let range = end - start; let current = start; let increment = end > start ? 1 : -1; let stepTime = Math.abs(Math.floor(duration / range));
+            let timer = setInterval(function() { current += increment; obj.innerHTML = current; if (current == end) clearInterval(timer); }, stepTime);
+        }
+        async function fetchAnalytics() {
+            const res = await fetch(`${API}/analytics`); const data = await res.json(); Chart.defaults.font.family = "'Poppins', sans-serif";
+            if(revenueChart) revenueChart.destroy(); revenueChart = new Chart(document.getElementById("revenueChart"), { type: 'bar', data: { labels: data.revenueData.map(d=>d.name), datasets: [{ label: 'Revenue (₹)', data: data.revenueData.map(d=>d.paid), backgroundColor: 'rgba(25, 135, 84, 0.8)', borderRadius: 5 }] }, options: { animation: { duration: 1500, easing: 'easeOutQuart' } } });
+            if(complaintChart) complaintChart.destroy(); complaintChart = new Chart(document.getElementById("complaintChart"), { type: 'doughnut', data: { labels: ['Pending', 'Solved'], datasets: [{ data: [data.complaintStats.pending, data.complaintStats.solved], backgroundColor: ['#ffc107', '#20c997'], borderWidth: 0 }] }, options: { cutout: '70%', animation: { animateScale: true, animateRotate: true, duration: 1500 } } });
+        }
+        async function fetchS() { const res = await fetch(`${API}/students`); const data = await res.json(); const tbody = document.getElementById("sTable"); tbody.innerHTML = ""; data.forEach(s => tbody.innerHTML += `<tr><td class="fw-bold text-primary">${s.studentId}</td><td><div class="d-flex align-items-center"><div class="bg-light rounded-circle text-center pt-1 me-2 fw-bold text-primary" style="width:30px;height:30px">${s.name.charAt(0)}</div>${s.name}</div></td><td class="text-muted">${s.email || '-'}</td><td><span class="badge bg-dark">Room ${s.room}</span></td><td><button class="btn btn-sm btn-outline-danger rounded-pill" onclick="delS('${s.studentId}')"><i class="fas fa-trash"></i></button></td></tr>`); }
+        async function fetchR() {
+            const res = await fetch(`${API}/rooms`); const data = await res.json(); const cont = document.getElementById("rContainer"); cont.innerHTML = "";
+            data.forEach(r => { const isFull = r.occupiedBeds >= r.totalBeds; cont.innerHTML += `<div class="col-md-3 mb-4"><div class="card p-4 text-center shadow-sm border-0 ${isFull?'bg-danger bg-opacity-10':'bg-success bg-opacity-10'}" style="transition: transform 0.3s"><div class="display-4 mb-2 ${isFull?'text-danger':'text-success'}"><i class="fas ${isFull?'fa-bed':'fa-door-open'}"></i></div><h4 class="fw-bold">Room ${r.roomNumber}</h4><div class="progress mt-3" style="height: 10px;"><div class="progress-bar ${isFull?'bg-danger':'bg-success'}" style="width: ${(r.occupiedBeds/r.totalBeds)*100}%"></div></div><p class="mt-2 mb-0 small fw-bold text-muted">${r.occupiedBeds} / ${r.totalBeds} Occupied</p></div></div>`; });
+        }
+        async function fetchFees() { const res = await fetch(`${API}/students`); const data = await res.json(); const tbody = document.getElementById("fTable"); tbody.innerHTML = ""; data.forEach(s => tbody.innerHTML += `<tr><td class="fw-bold">${s.studentId}</td><td>${s.name}</td><td class="text-muted">₹${s.totalFee}</td><td class="text-success fw-bold">₹${s.paidFee}</td><td class="text-danger fw-bold">₹${s.totalFee - s.paidFee}</td><td><button class="btn btn-sm btn-success rounded-pill px-3 shadow-sm" onclick="openPayModal('${s.studentId}')"><i class="fas fa-plus me-1"></i> Deposit</button></td></tr>`); }
+        async function fetchC() {
+            const res = await fetch(`${API}/complaints`); const data = await res.json(); const tbody = document.getElementById("cTable"); tbody.innerHTML = "";
+            data.forEach(c => { const dateStr = new Date(c.date).toLocaleDateString('en-GB', {day:'numeric', month:'short'}); const isPending = c.status === 'Pending'; tbody.innerHTML += `<tr><td class="text-muted fw-bold"><i class="far fa-calendar-alt me-1"></i>${dateStr}</td><td><strong class="text-dark">${c.studentName}</strong><br><small class="text-muted"><i class="fas fa-bed me-1"></i>Room ${c.roomNumber} | ${c.studentId}</small></td><td><span class="badge bg-light text-dark border"><i class="fas fa-tag me-1 text-primary"></i>${c.category}</span></td><td style="max-width: 250px;" class="text-secondary">${c.issue}</td><td><span class="badge rounded-pill ${isPending ? 'bg-warning text-dark' : 'bg-success'}">${c.status}</span></td><td>${isPending ? `<button class="btn btn-sm btn-primary fw-bold shadow-sm rounded-pill px-3" onclick="solveC('${c._id}')"><i class="fas fa-check me-1"></i> Resolve</button>` : `<span class="text-success fw-bold"><i class="fas fa-check-double me-1"></i> Done</span>`}</td></tr>`; });
+        }
+
+        window.solveC = async (id) => { if(confirm("Are you sure this issue is resolved?")) { await fetch(`${API}/complaints/${id}/solve`, { method: 'PUT' }); fetchC(); fetchAdminStats(); fetchAnalytics(); } };
+        document.getElementById("addSForm").onsubmit = async (e) => { e.preventDefault(); const btn = e.target.querySelector("button"); btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Saving...'; await fetch(`${API}/students`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ studentId: document.getElementById("sid").value.trim(), name: document.getElementById("sname").value.trim(), email: document.getElementById("semail").value.trim(), room: document.getElementById("sroom").value.trim() }) }); setTimeout(() => { bootstrap.Modal.getInstance(document.getElementById('addSModal')).hide(); fetchS(); fetchAdminStats(); fetchAnalytics(); btn.innerHTML = 'Save Student Record'; e.target.reset(); }, 500); };
+        window.openPayModal = (id) => { document.getElementById("paySId").value = id; new bootstrap.Modal(document.getElementById('payFeeModal')).show(); };
+        window.adminSubmitPayment = async () => { await fetch(`${API}/pay-fee`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ studentId: document.getElementById("paySId").value, amount: document.getElementById("payAmount").value }) }); bootstrap.Modal.getInstance(document.getElementById('payFeeModal')).hide(); document.getElementById("payAmount").value = ""; fetchFees(); fetchAdminStats(); fetchAnalytics(); };
+        window.delS = async (id) => { if(confirm("Delete this student permanently?")){ await fetch(`${API}/students/${encodeURIComponent(id)}`, {method:'DELETE'}); fetchS(); fetchAdminStats(); fetchAnalytics(); } };
+        window.logout = () => { document.body.style.opacity = '0'; document.body.style.transition = 'opacity 0.5s ease'; setTimeout(() => window.location.reload(), 500); };
+    </script>
+</body>
+</html>
