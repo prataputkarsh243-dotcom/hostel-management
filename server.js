@@ -1,9 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const cors = require('cors'); // ✅ Add kiya
 
 const app = express();
+app.use(cors()); // ✅ Permission enable ki
 app.use(express.json());
+
+// Baaki ka code niche...
 
 // =====================================
 // 🎯 STATIC FILES & PATH FIX
